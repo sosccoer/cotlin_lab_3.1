@@ -26,6 +26,9 @@ import androidx.compose.ui.res.stringResource
 import java.sql.Driver
 import androidx.compose.material.Icon
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.material.icons.filled.Star
+import androidx.constraintlayout.compose.Dimension
+
 
 
 import com.topic3.android.reddit.theme.RedditThemeSettings
@@ -60,8 +63,44 @@ private fun AppDrawerHeader() {
 }
 
 @Composable
-fun ProfileInfo() {
-  //TODO add your code here
+  fun ProfileInfo(modifier: Modifier = Modifier) {
+    //TODO add your code here
+    ConstraintLayout (
+      modifier = modifier
+        .fillMaxWidth()
+        .padding(top = 16.dp)
+    ){
+      val (karmaltem, divider, ageItem) = createRefs()
+      val colors = MaterialTheme.colors
+
+      ProfileInfoItem(
+        Icons.Filled.Star,
+        R.string.default_karma_amount,
+        R.string.karma,
+        modifier = modifier.constrainAs(karmaltem){
+          centerVerticallyTo(parent)
+          start.linkTo(parent.start)
+        }
+      )
+      Divider(
+        modifier = modifier
+          .width(1.dp)
+          .constrainAs(divider) {
+            centerVerticallyTo(karmaltem)
+            centerHorizontallyTo(parent)
+            height = Dimension.fillToConstraints
+          },
+        color = colors.onSurface.copy(alpha = .2f)
+      )
+      ProfileInfoItem(Icons.Filled.ShoppingCart,
+        R.string.default_reddit_age_amount,
+        R.string.reddit_age,
+        modifier= modifier.constrainAs(ageItem){
+          start.linkTo(divider.end)
+          centerVerticallyTo(parent)
+        }
+      )
+    }
 }
 
 @Composable
