@@ -28,7 +28,11 @@ import androidx.compose.material.Icon
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.compose.material.icons.filled.Star
 import androidx.constraintlayout.compose.Dimension
-
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.res.vectorResource
 
 
 import com.topic3.android.reddit.theme.RedditThemeSettings
@@ -60,6 +64,34 @@ fun AppDrawer(
 @Composable
 private fun AppDrawerHeader() {
   //TODO add your code here
+  Column(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Image(
+      imageVector = Icons.Filled.AccountCircle,
+      colorFilter = ColorFilter.tint(Color.LightGray),
+      modifier = Modifier
+        .padding(16.dp)
+        .size(50.dp),
+      contentScale = ContentScale.Fit,
+      alignment = Alignment.Center,
+      contentDescription = stringResource(id = R.string.account)
+    )
+    Text(
+      text = stringResource(R.string.default_username),
+      color = MaterialTheme.colors.primaryVariant
+    )
+    ProfileInfo()// dobavit
+
+
+  }
+  Divider(
+    color = MaterialTheme.colors.onSurface.copy(alpha = .2f),
+    modifier = Modifier.padding(
+      start = 16.dp, end = 16.dp, top = 16.dp
+    )
+  )
 }
 
 @Composable
@@ -151,32 +183,21 @@ private fun ProfileInfoItem(
  */
 @Composable
 private fun AppDrawerBody(closeDrawerAction: () -> Unit) {
-  Column(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalAlignment = Alignment.CenterHorizontally
-  ){
-    Image(
-      imageVector = Icons.Filled.AccountCircle,
-      colorFilter = ColorFilter.tint(Color.LightGray),
-      modifier = Modifier
-        .padding(16.dp)
-        .size(50.dp),
-      contentScale = ContentScale.Fit,
-      alignment = Alignment.Center,
-      contentDescription = stringResource(id = R.string.account)
+  Column {
+    ScreenNavigationButton(icon = Icons.Filled.AccountBox,
+      label = stringResource(R.string.my_profile),
+      onClickAction = {
+        closeDrawerAction()
+      }
     )
-    Text(
-      text = stringResource(R.string.default_username),
-      color = MaterialTheme.colors.primaryVariant)
+    ScreenNavigationButton(icon = Icons.Filled.Home,
+      label = stringResource(R.string.saved),
+      onClickAction = {
+        closeDrawerAction()
 
-
+      }
+    )
   }
-  Divider(
-    color = MaterialTheme.colors.onSurface.copy(alpha = .2f),
-    modifier = Modifier.padding(
-      start = 16.dp, end = 16.dp, top = 16.dp
-    )
-  )
 }
 
 /**
@@ -231,7 +252,52 @@ private fun ScreenNavigationButton(
  */
 @Composable
 private fun AppDrawerFooter(modifier: Modifier = Modifier) {
-  //TODO add your code here
+  ConstraintLayout(
+    modifier = modifier
+      .fillMaxSize()
+      .padding(
+        start = 16.dp,
+        bottom = 16.dp,
+        end = 16.dp
+      )
+  ){
+    val colors = MaterialTheme.colors
+    val (settingsImage, settingsText,darkModeButton) = createRefs()
+    Icon(
+      modifier = modifier.constrainAs(settingsImage){
+        start.linkTo(parent.start)
+        bottom.linkTo(parent.bottom)
+      },
+      imageVector = Icons.Default.Settings,
+      contentDescription = stringResource(
+        id = R.string.settings
+      ),
+      tint = colors.primaryVariant
+    )
+    Text(
+      fontSize = 10.sp,
+      text = stringResource(R.string.settings),
+      style = MaterialTheme.typography.body2,
+      color = colors.primaryVariant,
+      modifier = modifier
+        .padding(start = 16.dp)
+        .constrainAs(settingsText) {
+          start.linkTo(settingsImage.end)
+          centerVerticallyTo(settingsImage)
+        }
+    )
+    Icon(
+      imageVector = ImageVector.vectorResource(id = R.drawable.ic_moon),
+      contentDescription = stringResource(id = R.string.change_theme),
+      modifier = modifier
+        .clickable(onClick = { changeTheme() })
+        .constrainAs(darkModeButton){
+          end.linkTo(parent.end)
+          bottom.linkTo(settingsImage.bottom)
+        },
+      tint = colors.primaryVariant
+    )
+  }
 }
 
 private fun changeTheme() {
